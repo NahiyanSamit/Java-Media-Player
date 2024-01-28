@@ -1,8 +1,3 @@
-
-# Java-Media-Player
-A simple media player which can play mp3 and mp4 file with some playback functionality 
-
-
 # Java Media Player
 
 This application aimed to create a user-friendly and versatile media player using Java programming language. This media player ensures seamless playback of both audio and video files, allowing users to enjoy their favorite songs and movies. By supporting popular file formats such as MP3 and MP4, our media player supplies a wide range of multimedia requirements.
