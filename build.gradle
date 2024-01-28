@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'org.beryx.jlink' version '2.25.0'
+}
+
+group 'com.player'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = '5.9.1'
+}
+
+sourceCompatibility = '9'
+targetCompatibility = '9'
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+application {
+    mainModule = 'com.player.javamusicplayergradle'
+    mainClass = 'com.player.javamusicplayergradle.Main'
+}
+
+javafx {
+    version = '19.0.2.1'
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media']
+}
+
+dependencies {
+    implementation('org.controlsfx:controlsfx:11.1.1')
+    implementation ('org.openjfx:javafx-controls:19.0.2.1')// JavaFX Controls
+    implementation ('org.openjfx:javafx-fxml:19.0.2.1') // JavaFX FXML
+    implementation ('org.openjfx:javafx-graphics:19.0.2.1') // JavaFX Graphics
+    implementation ('org.openjfx:javafx-media:19.0.2.1') // JavaFX Media
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jlink {
+    imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip") as RegularFile
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    launcher {
+        name = 'JAVA Media Player'
+    }
+    jpackage {
+        installerOutputDir = file("$buildDir/installer")
+        installerOptions = [
+                '--vendor', 'JUST',
+                '--win-per-user-install', '--win-dir-chooser',
+                '--win-menu', '--win-shortcut'
+        ]
+    }
+}
+jar {
+    manifest {
+        attributes('Main-Class': 'com.player.javamusicplayergradle.Application',
+                'Module-Path': configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) })
+    }
+//    from {
+//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
+}
+
+
+jlinkZip {
+    group = 'distribution'
+}
+
